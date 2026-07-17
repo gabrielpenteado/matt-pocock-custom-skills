@@ -18,69 +18,51 @@ A fork of [Matt Pocock's skills](https://github.com/mattpocock/skills) with auto
 
 The original skills are excellent for building code, but they have a gap: **project documentation goes stale**. When `/implement` finishes a ticket, it commits the code but never updates `project-state.md` or `architecture.md`. Over time, these docs diverge from reality — the frontier shows tickets that are already done, the architecture doesn't reflect new modules, and agents lose context.
 
-This fork closes that gap. After each ticket, the agent automatically:
-
-- Rewrites the frontier in `project-state.md` (which tickets are now unblocked)
-- Appends a completion log entry (what was built, which files changed, the commit SHA)
-- Rewrites `architecture.md` if the system structure changed
-- Marks the ticket as `[x]` done in the tracker
-
-The result: project docs stay accurate without manual effort, and every new session starts with a correct picture of the project.
+This fork closes that gap with a dedicated skill — `/update-project-state` — that preserves project memory after development work. It also ensures `architecture.md` is created during codebase exploration via `/grill-with-docs`.
 
 ## What Changed
 
-### 1. `implement/SKILL.md` — Modified
+### 1. `update-project-state/SKILL.md` — New Skill (Promoted)
 
-**Original:** 6 lines. Build code, run tests, `/code-review`, commit.
+A new engineering skill that maintains project memory after development work:
 
-**Customized:** Added two new sections:
-
-- **Before starting** — reads `docs/agents/domain.md` to understand the project's documentation rules
-- **Done** — before committing, runs 5 steps:
-  1. Updates `docs/agents/project-state.md` (rewrites frontier, appends to completed log)
-  2. Rewrites `docs/agents/architecture.md` if the system structure changed
-  3. Marks the ticket as `done` in the configured tracker (including `[x]` on all checkboxes for local files)
-  4. Runs `/code-review`
-  5. Commits
+- **Updates `project-state.md`** — rewrites the Frontier section, appends to the Completed log (with SHA)
+- **Marks tickets as done** — `[x]` on all checkboxes for local files, `done` label for GitHub/GitLab
+- **Analyzes `architecture.md`** — flags if the system structure changed, suggests review
+- **Analyzes `AGENTS.md`** — detects new permanent engineering rules, suggests addition
+- **Analyzes `CONTEXT.md`** (single or multi-context) — detects new domain concepts, suggests `/grill-with-docs`
+- **Analyzes ADRs** — detects decisions that need documentation, suggests `/grill-with-docs`
+- **Generates a final report** — lists what was updated and what needs human review with concrete next actions
 
 **Problem solved:** The original had no instructions to keep project docs in sync. Code gets built, but `project-state.md` and `architecture.md` go stale. Tickets get marked as done but their checkboxes stay empty.
 
 ---
 
-### 2. `setup-matt-pocock-skills/SKILL.md` — Modified
+### 2. `implement/SKILL.md` — Upstream + Chaining
 
-**Original:** Creates `issue-tracker.md`, `domain.md`, and `triage-labels.md`. Does not create `architecture.md` or `project-state.md`.
+Reverted to the original upstream. The only addition is a chaining line at the end:
 
-**Customized:** Now also creates:
+> After committing, run `/update-project-state` to preserve project memory.
 
-- `docs/agents/architecture.md` — initial placeholder for system structure
-- `docs/agents/project-state.md` — initial placeholder for project progress
-
-Step 3 (Confirm) and Step 4 (Write) updated to include these new files. Step 5 (Done) notes they'll be populated by `/grill-with-docs` and `/implement`.
-
-**Problem solved:** Without these placeholders, `/implement` has nothing to update. The setup now creates the full doc structure that the engineering skills expect.
+This follows the same pattern as `to-tickets` chaining into `/implement`.
 
 ---
 
-### 3. `setup-matt-pocock-skills/domain.md` — Modified
+### 3. `grill-with-docs/SKILL.md` — Modified
 
-**Original:** File structure shows only `CONTEXT.md`, `docs/adr/`, and `src/`. No mention of `docs/agents/`. No rules for maintaining architecture or project state docs.
+Added a section to create `docs/agents/architecture.md` when exploring the codebase. The file is created lazily — only when the session reveals the system structure. If it already exists, it is rewritten (not edited in-place) when the structure changes.
 
-**Customized:**
-
-- Added `docs/agents/` to the file structure diagram (with `architecture.md`, `domain.md`, `issue-tracker.md`, `project-state.md`, `triage-labels.md`)
-- Added **"Architecture doc"** section — rules for reading and rewriting `architecture.md`
-- Added **"Project state doc"** section — rules for frontier (rewrite every time) and completed log (append-only)
-
-**Problem solved:** The original `domain.md` didn't define how to maintain these docs. Without these rules, agents don't know when or how to update them.
+**Problem solved:** `architecture.md` describes system structure and only has value when filled with real understanding. Creating it during `/grill-with-docs` (which explores the codebase) is more meaningful than creating an empty placeholder during setup.
 
 ---
 
-### 4. `setup-matt-pocock-skills/architecture.md` — New File
+### 4. `setup-matt-pocock-skills/domain.md` — Modified
 
-Seed template for `docs/agents/architecture.md`. Includes sections for Overview, Structure, Data Flow, Key Interfaces, Dependencies, and Platforms.
+- Added `docs/agents/` to the file structure diagram
+- Added **"Project state doc"** section with rules for Frontier (rewrite every time) and Completed (append-only)
+- References `/update-project-state` for when updates happen
 
-**Problem solved:** Didn't exist in the original. Needed so `/setup-matt-pocock-skills` can create the file.
+**Problem solved:** The original `domain.md` didn't define how to maintain project state docs. Without these rules, agents don't know when or how to update them.
 
 ---
 
@@ -88,9 +70,23 @@ Seed template for `docs/agents/architecture.md`. Includes sections for Overview,
 
 Seed template for `docs/agents/project-state.md`. Includes Frontier table (rewrite every time) and Completed log (append-only).
 
-**Problem solved:** Didn't exist in the original. Needed so `/setup-matt-pocock-skills` can create the file.
+**Problem solved:** Didn't exist in the original. Needed so `/setup-matt-pocock-skills` can create the initial file.
 
 ---
+
+## The Flow
+
+```
+/grill-with-docs  (creates CONTEXT.md, ADRs, architecture.md)
+       |
+   /to-spec
+       |
+  /to-tickets
+       |
+   /implement  (builds code, runs /tdd, /code-review, commits)
+       |
+/update-project-state  (updates project-state.md, marks tickets done, flags review needs)
+```
 
 ## Installation
 
@@ -108,7 +104,7 @@ git merge upstream/main
 git push
 ```
 
-Conflicts only occur if upstream changes `implement/SKILL.md` or `setup-matt-pocock-skills/` files.
+Conflicts only occur if upstream changes `implement/SKILL.md`, `grill-with-docs/SKILL.md`, or `setup-matt-pocock-skills/` files.
 
 ---
 

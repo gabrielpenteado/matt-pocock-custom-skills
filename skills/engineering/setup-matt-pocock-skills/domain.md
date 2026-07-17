@@ -57,15 +57,6 @@ If your output contradicts an existing ADR, surface it explicitly rather than si
 
 > _Contradicts ADR-0007 (event-sourced orders) — but worth reopening because…_
 
-## Architecture doc
-
-**`docs/agents/architecture.md`** describes the **current** system structure. It is the single source of truth for how the codebase is organized.
-
-- **Read it** at the start of any `/implement` or `/improve-codebase-architecture` session to understand the current shape.
-- **Rewrite it** (not edit in-place) when your work changes the structure: new modules, moved files, changed interfaces, removed components.
-- **Never duplicate** what's in the code — describe structure and interfaces, don't paste code snippets.
-- **No "deprecated" sections** — if code is removed, it's removed from the doc in the same commit.
-
 ## Project state doc
 
 **`docs/agents/project-state.md`** tracks what's been built and what's next. Two sections with different rules:
@@ -90,4 +81,4 @@ Template for a completed entry:
 
 ### When to update
 
-The `/implement` skill updates `project-state.md` as part of its "done" step, before committing. If you're working outside `/implement`, update it manually when you finish a meaningful chunk of work.
+The `/update-project-state` skill updates `project-state.md` after development work. You can also update it manually when you finish a meaningful chunk of work.
