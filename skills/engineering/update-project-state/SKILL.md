@@ -54,7 +54,7 @@ Analyze what was just built and update the file:
 
 In the configured tracker:
 
-- **Local files** (`.scratch/`): update the ticket's `Status:` field to `done` and mark all checkboxes as `[x]`
+- **Local files** (`.scratch/` or `tickets/`): update the ticket's `Status:` field to `done` and mark all checkboxes as `[x]`
 - **GitHub/GitLab**: apply the `done` label or close the issue per your convention
 
 ### 4. Analyze architecture.md

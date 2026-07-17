@@ -18,7 +18,11 @@ A fork of [Matt Pocock's skills](https://github.com/mattpocock/skills) with auto
 
 The original skills are excellent for building code, but they have a gap: **project documentation goes stale**. When `/implement` finishes a ticket, it commits the code but never updates `project-state.md` or `architecture.md`. Over time, these docs diverge from reality — the frontier shows tickets that are already done, the architecture doesn't reflect new modules, and agents lose context.
 
-This fork closes that gap with a dedicated skill — `/update-project-state` — that preserves project memory after development work. It also ensures `architecture.md` is created during codebase exploration via `/grill-with-docs`.
+This fork closes that gap with:
+
+- **`/update-project-state`** — a dedicated skill that preserves project memory after development work
+- **`/audit-project-knowledge`** — a periodic audit that catches contradictions, drift, and stale data across all project docs
+- **Session start instructions** — every new agent session reads `project-state.md`, `architecture.md`, `CONTEXT.md`, and `issue-tracker.md` before doing anything else
 
 ## What Changed
 
@@ -40,11 +44,13 @@ A new engineering skill that maintains project memory after development work:
 
 ### 2. `implement/SKILL.md` — Upstream + Chaining
 
-Reverted to the original upstream. The only addition is a chaining line at the end:
+Reverted to the original upstream. The only addition is a chaining line — but the order matters:
 
-> After committing, run `/update-project-state` to preserve project memory.
+```
+/code-review  →  /update-project-state  →  COMMIT
+```
 
-This follows the same pattern as `to-tickets` chaining into `/implement`.
+The commit happens **after** `/update-project-state`, so project-state updates, ticket marks, and review flags are all included in the same commit.
 
 ---
 
@@ -56,7 +62,25 @@ Added a section to create `docs/agents/architecture.md` when exploring the codeb
 
 ---
 
-### 4. `setup-matt-pocock-skills/domain.md` — Modified
+### 4. `setup-matt-pocock-skills/SKILL.md` — Modified (Agent skills block)
+
+The `## Agent skills` block template now includes a **Session start** section:
+
+```markdown
+### Session start
+
+At the start of each session, read these files to understand the project:
+- `docs/agents/project-state.md` — what's been built, what's next, what's blocked
+- `docs/agents/architecture.md` — how the codebase is structured
+- `CONTEXT.md` — domain glossary and vocabulary
+- `docs/agents/issue-tracker.md` — where issues live and how to interact with them
+```
+
+**Problem solved:** Without this, a new agent session starts blind — it doesn't know what was built, what's pending, or how the project is structured. Now every session begins with full context.
+
+---
+
+### 5. `setup-matt-pocock-skills/domain.md` — Modified
 
 - Added `docs/agents/` to the file structure diagram
 - Added **"Project state doc"** section with rules for Frontier (rewrite every time) and Completed (append-only)
@@ -66,7 +90,7 @@ Added a section to create `docs/agents/architecture.md` when exploring the codeb
 
 ---
 
-### 5. `setup-matt-pocock-skills/project-state.md` — New File
+### 6. `setup-matt-pocock-skills/project-state.md` — New File
 
 Seed template for `docs/agents/project-state.md`. Includes Frontier table (rewrite every time) and Completed log (append-only).
 
@@ -74,7 +98,7 @@ Seed template for `docs/agents/project-state.md`. Includes Frontier table (rewri
 
 ---
 
-### 6. `audit-project-knowledge/SKILL.md` — New Skill (Promoted)
+### 7. `audit-project-knowledge/SKILL.md` — New Skill (Promoted)
 
 A periodic audit of the project's knowledge base. Not part of the normal dev loop — run monthly or after major milestones.
 
@@ -93,15 +117,24 @@ A periodic audit of the project's knowledge base. Not part of the normal dev loo
 ## The Flow
 
 ```
+New session:
+  Agent reads project-state.md + architecture.md + CONTEXT.md + issue-tracker.md
+
+Normal flow (per ticket):
 /grill-with-docs  (creates CONTEXT.md, ADRs, architecture.md)
        |
    /to-spec
        |
   /to-tickets
        |
-   /implement  (builds code, runs /tdd, /code-review, commits)
-       |
-/update-project-state  (updates project-state.md, marks tickets done, flags review needs)
+   /implement
+     1. /tdd
+     2. /code-review
+     3. /update-project-state  (updates docs, marks ticket, flags review needs)
+     4. COMMIT                  (everything in one commit)
+
+Periodic maintenance:
+/audit-project-knowledge  (full knowledge base audit, monthly or after milestones)
 ```
 
 ## Installation
