@@ -86,6 +86,14 @@ The block:
 ```markdown
 ## Agent skills
 
+### Session start
+
+At the start of each session, read these files to understand the project:
+- `docs/agents/project-state.md` — what's been built, what's next, what's blocked
+- `docs/agents/architecture.md` — how the codebase is structured
+- `CONTEXT.md` (or each context's `CONTEXT.md` via `CONTEXT-MAP.md`) — domain glossary and vocabulary
+- `docs/agents/issue-tracker.md` — where issues live and how to interact with them
+
 ### Issue tracker
 
 [one-line summary of where issues are tracked]. See `docs/agents/issue-tracker.md`.

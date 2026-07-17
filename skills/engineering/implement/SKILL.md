@@ -12,6 +12,6 @@ Run typechecking regularly, single test files regularly, and the full test suite
 
 Once done, use /code-review to review the work.
 
-Commit your work to the current branch.
+Then run `/update-project-state` to preserve project memory — it updates project-state.md, marks tickets done, and flags review needs.
 
-After committing, run `/update-project-state` to preserve project memory.
+Commit your work to the current branch.
