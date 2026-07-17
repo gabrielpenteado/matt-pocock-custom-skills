@@ -74,6 +74,22 @@ Seed template for `docs/agents/project-state.md`. Includes Frontier table (rewri
 
 ---
 
+### 6. `audit-project-knowledge/SKILL.md` — New Skill (Promoted)
+
+A periodic audit of the project's knowledge base. Not part of the normal dev loop — run monthly or after major milestones.
+
+- **Audits AGENTS.md** — duplicate rules, contradictions, stale rules
+- **Audits architecture.md** — outdated modules, stale interfaces, structural drift
+- **Audits project-state.md** — frontier inconsistency, stale SHAs
+- **Audits CONTEXT.md** (single or multi-context) — unused terms, duplicates, drifted definitions
+- **Audits ADRs** — contradictory ADRs, reverted decisions, missing ADRs
+- **Cross-references** between documents for contradictions
+- **Generates a report** with severity levels (critical/warning/info) and specific skills to fix each problem
+
+**Problem solved:** `/update-project-state` catches problems per-ticket, but issues accumulate over time. This skill finds the ones nobody noticed — contradictions between documents, knowledge drift, stale data.
+
+---
+
 ## The Flow
 
 ```
