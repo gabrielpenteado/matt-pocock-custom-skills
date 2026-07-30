@@ -1,7 +1,6 @@
 ---
 name: update-project-state
-description: Preserve project memory after development work — update project-state.md, and flag whether architecture.md, AGENTS.md, CONTEXT.md, or ADRs need review.
-disable-model-invocation: true
+description: "Preserve project memory after development work. Use after /implement and /code-review, when a task completes, or when the user says 'update state'. Updates project-state.md, marks tickets done, flags review needs for architecture.md, AGENTS.md, CONTEXT.md, or ADRs."
 ---
 
 # Update Project State
@@ -34,6 +33,8 @@ Run after:
 
 Read `docs/agents/project-state.md`. If it does not exist, stop — run `/setup-matt-pocock-skills` first.
 
+Completion criterion: Done when project-state.md has been read or the stop condition triggered.
+
 ### 2. Update project-state.md
 
 Analyze what was just built and update the file:
@@ -50,12 +51,16 @@ Analyze what was just built and update the file:
 - **Commit:** SHA
 ```
 
+Completion criterion: Done when Frontier rewritten and Completed entry appended.
+
 ### 3. Mark the ticket as done
 
 In the configured tracker:
 
 - **Local files** (`.scratch/` or `tickets/`): update the ticket's `Status:` field to `done` and mark all checkboxes as `[x]`
 - **GitHub/GitLab**: apply the `done` label or close the issue per your convention
+
+Completion criterion: Done when ticket is marked done in the tracker.
 
 ### 4. Analyze architecture.md
 
@@ -71,6 +76,8 @@ Review whether recent changes affected:
 - infrastructure
 
 If the architecture changed significantly, add it to the "Review Needed" section of the final report. Do not rewrite automatically.
+
+Completion criterion: Done when architecture.md has been reviewed and flagged if needed.
 
 ### 5. Analyze AGENTS.md
 
@@ -92,6 +99,8 @@ Review whether recent changes revealed a new permanent engineering rule.
 
 If needed, add it to the "Review Needed" section. Do not modify automatically.
 
+Completion criterion: Done when AGENTS.md has been reviewed and flagged if needed.
+
 ### 6. Analyze CONTEXT.md
 
 Do not modify CONTEXT.md.
@@ -106,11 +115,15 @@ If a `CONTEXT-MAP.md` exists at the root, check each context's `CONTEXT.md` that
 
 If changes are detected, add it to the "Review Needed" section with the action: "Execute `/grill-with-docs` to resolve the new terms."
 
+Completion criterion: Done when CONTEXT.md has been reviewed and flagged if needed.
+
 ### 7. Analyze ADRs
 
 Never create, modify, or delete ADRs.
 
 If a significant architectural decision was discovered during the work — one that is hard to reverse, surprising without context, and the result of a real trade-off — add it to the "Review Needed" section with the action: "Execute `/grill-with-docs` to document the decision."
+
+Completion criterion: Done when ADRs have been reviewed and flagged if needed.
 
 ### 8. Final Report
 
@@ -143,6 +156,8 @@ After analysis, produce a summary:
 - **Action:** Run `/grill-with-docs` to create the ADR
 ```
 
+Completion criterion: Done when the final report has been produced.
+
 ## Rules
 
 This skill must:
@@ -151,11 +166,10 @@ This skill must:
 - keep `project-state.md` accurate
 - avoid duplicating knowledge
 - suggest changes instead of making uncertain decisions
+- defer to `/grill-with-docs` for terminology, domain knowledge, and documenting decisions
+- flag CONTEXT.md and ADR changes for review instead of modifying them directly
+- wait for user confirmation before rewriting `architecture.md` or `AGENTS.md`
 
 This skill must not:
 
-- replace `/grill-with-docs`
-- modify `CONTEXT.md`
-- modify ADRs
 - make architectural decisions
-- rewrite `architecture.md` or `AGENTS.md` without explicit user confirmation

@@ -1,6 +1,6 @@
 ---
 name: audit-project-knowledge
-description: Periodic audit of the project's knowledge base — finds duplicate rules, outdated docs, contradictions, and knowledge drift across AGENTS.md, architecture.md, project-state.md, CONTEXT.md, and ADRs.
+description: Periodic audit of the project's knowledge base for consistency and drift.
 disable-model-invocation: true
 ---
 
@@ -19,23 +19,13 @@ Run after:
 - when documentation becomes difficult to navigate
 - once per month as a maintenance routine
 
-## Core Principle
-
-Project documentation is persistent engineering memory. Memory should be preserved carefully.
-
-This skill must:
-
-1. Preserve existing knowledge
-2. Detect possible problems
-3. Explain why something may need attention
-4. Suggest improvements with the right skill to fix each one
-5. Never modify files automatically
-
 ## Process
 
 ### 1. Read all project docs
 
 Read every file in scope. If a file does not exist, skip it silently.
+
+Completion criterion: Done when every file in scope has been read or silently skipped.
 
 - `AGENTS.md` at the repo root
 - `docs/agents/architecture.md`
@@ -96,6 +86,8 @@ Look for:
 - **Missing ADRs** — significant architectural decisions made in code without a corresponding ADR (check commit messages for "decided", "chose", "switched to")
 - **Stale ADRs** — ADRs referencing code or patterns that no longer exist
 
+Completion criterion: Done when every file type has been audited against its checklist.
+
 ### 3. Cross-reference between files
 
 Check for contradictions **across** documents:
@@ -104,6 +96,8 @@ Check for contradictions **across** documents:
 - architecture.md describes a module that CONTEXT.md calls by a different name
 - project-state.md references a ticket that no longer exists in the tracker
 - ADR recommends an approach that architecture.md shows was not followed
+
+Completion criterion: Done when all cross-document contradictions have been checked.
 
 ### 4. Generate audit report
 
@@ -152,19 +146,20 @@ Example:
 
 Only include sections that have findings. Omit sections with no issues.
 
+Completion criterion: Done when the audit report has been generated and presented to the user.
+
 ## Rules
 
 This skill must:
 
 - preserve project continuity
-- never delete or modify files automatically
 - suggest the specific skill or action to fix each problem
 - prioritize critical issues (contradictions, stale data) over warnings (drift, gaps)
-- never flag something as a problem when it's actually a deliberate choice (check commit messages and ADRs for context)
+- flag only genuine problems — verify deliberate choices against commit messages and ADRs before flagging
+- defer to `/update-project-state` for post-ticket updates
+- defer to `/improve-codebase-architecture` for code architecture deepening
 
 This skill must not:
 
-- replace `/update-project-state` (that skill handles post-ticket updates)
-- replace `/improve-codebase-architecture` (that skill handles code architecture deepening)
 - modify any project files
 - make architectural decisions
