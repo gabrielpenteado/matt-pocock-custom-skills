@@ -20,7 +20,7 @@ The route most work travels. You have an idea and want it built.
    - **`/prototype`** to answer the question with throwaway code,
    - **`/handoff`** back what you learned, and reference it from the original idea thread.
 3. **Branch — is this a multi-session build?**
-   - **Yes** → **`/to-spec`** (turn the thread into a spec), then **`/to-tickets`** to split it into tracer-bullet tickets, each declaring its **blocking edges**. On a local tracker that's one file per ticket under `.scratch/<feature>/issues/`, worked blockers-first by hand; on a real tracker the edges become native blocking links, so any ticket whose blockers are done can be grabbed — kick off **`/implement`** per ticket, **clearing context between each one**.
+   - **Yes** → **`/to-spec`** (turn the thread into a spec), then **`/to-tickets`** to split it into tracer-bullet tickets, each declaring its **blocking edges**. On a local tracker that's one file per ticket under `.scratch/<feature>/issues/`, worked blockers-first by hand; on a real tracker the edges become native blocking links, so any ticket whose blockers are done can be grabbed (outgrew local files? **`/to-github`** migrates existing tickets onto GitHub Issues, wiring blocking edges as native dependencies — a one-way door, run once) — kick off **`/implement`** per ticket, **clearing context between each one**.
    - **No** → **`/implement`** right here, in the same context window.
 
    Either way, **`/implement`** builds each issue by driving **`/tdd`** internally — one red-green slice at a time — then closes out by running **`/code-review`**, a two-axis review (Standards + Spec) of the diff. After review, run **`/update-project-state`** to preserve project memory — it updates `project-state.md`, marks tickets done, and flags whether `architecture.md`, `AGENTS.md`, `CONTEXT.md`, or ADRs need review. Then commit everything together. Reach for **`/tdd`** on its own when you just want to build a concrete behaviour test-first without a full spec, and **`/code-review`** on its own whenever you want to review a branch or PR against a fixed point.
@@ -34,6 +34,8 @@ The limit on this is the **[smart zone](https://www.aihero.dev/ai-coding-diction
 ## On-ramps
 
 A starting situation that generates work, then merges onto the main flow.
+
+- **Resuming a ticket-based project in a fresh session** → **`/prime`**. Loads `AGENTS.md`/`CLAUDE.md`, `CONTEXT.md`, and everything under `docs/agents/` (`project-state.md`, `architecture.md`, `domain.md`, `issue-tracker.md`), skims the codebase, then names the **frontier** — the next ticket ready to pick up — and stops. It never implements; run **`/implement`** next, once you confirm. Skip it if you’re already mid-session with fresh context.
 
 - **Bugs and requests piling up** → **`/triage`**. It moves issues through triage roles and produces agent-ready issues, which **`/implement`** later picks up.
 

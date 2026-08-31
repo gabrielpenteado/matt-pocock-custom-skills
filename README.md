@@ -114,18 +114,44 @@ A periodic audit of the project's knowledge base. Not part of the normal dev loo
 
 ---
 
+### 8. `prime/SKILL.md` — New Skill (Promoted)
+
+An explicit, on-demand version of the **Session start** instructions from #4: reads `AGENTS.md`/`CLAUDE.md`, `CONTEXT.md` (or `CONTEXT-MAP.md`), and everything under `docs/agents/` (`project-state.md`, `architecture.md`, `domain.md`, `issue-tracker.md`), skims the codebase, then names the **frontier** — the next ticket ready to pick up, cross-checked against wherever tickets actually live in case `project-state.md` went stale — and stops.
+
+- **Never implements** — reports the frontier ticket and confirms it's ready to start, nothing more
+- **Verifies before trusting** — if `project-state.md` names a ticket that's already done or still blocked, it walks to the real frontier and flags the mismatch instead of repeating stale state
+- **Works with no docs at all** — explores the repo directly and says so, instead of stalling
+
+**Problem solved:** #4's `## Agent skills` block tells an agent to read those files at session start, but that's a passive instruction living in `AGENTS.md` — not every harness re-reads and acts on it the same way at the top of every session. `/prime` is the same job as an explicit command you can run yourself, on any harness, whenever you're picking a ticket-based project back up.
+
+---
+
+### 9. `to-github/SKILL.md` — New Skill (Promoted)
+
+Migrates tickets off a **local-markdown** tracker onto GitHub Issues, wiring each ticket's `Blocked by` list as GitHub's **native issue dependencies** instead of prose, then repoints `docs/agents/issue-tracker.md` to GitHub via `/setup-matt-pocock-skills`. A **one-way door** — after it runs, GitHub is the tracker from then on, not just for the tickets migrated that run.
+
+- **Reads the migration scope from `docs/agents/issue-tracker.md`** — per-feature (`.scratch/<feature-slug>/issues/`) or flat (`tickets/`) layout, whichever this repo uses
+- **Skips what's already migrated** via a `GITHUB-IMPORT.md` manifest, so re-running only picks up what's new
+- **Confirms with you before creating anything real** on GitHub
+
+**Problem solved:** `setup-matt-pocock-skills` recommends local markdown for solo projects without a remote, but a project that grows past that point had no supported way to move its ticket history — and blocking edges — onto GitHub without losing them.
+
+---
+
 ## The Flow
 
 ```
-New session:
-  Agent reads project-state.md + architecture.md + CONTEXT.md + issue-tracker.md
+New session (explicit):
+  /prime  (reads project-state.md + architecture.md + CONTEXT.md + issue-tracker.md,
+           skims the codebase, names the frontier ticket, stops)
+    — same job as the passive "Session start" instructions in AGENTS.md, on demand
 
 Normal flow (per ticket):
 /grill-with-docs  (creates CONTEXT.md, ADRs, architecture.md)
        |
    /to-spec
        |
-  /to-tickets
+  /to-tickets  ────────────────►  /to-github  (one-way: local tracker → GitHub Issues)
        |
    /implement
      1. /tdd

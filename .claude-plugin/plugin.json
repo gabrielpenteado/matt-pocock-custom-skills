@@ -30,6 +30,8 @@
     "./skills/engineering/to-tickets",
     "./skills/engineering/wayfinder",
     "./skills/engineering/implement",
+    "./skills/engineering/prime",
+    "./skills/engineering/to-github",
     "./skills/engineering/update-project-state",
     "./skills/engineering/audit-project-knowledge",
     "./skills/engineering/prototype",
