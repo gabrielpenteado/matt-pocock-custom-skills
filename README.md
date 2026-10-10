@@ -22,7 +22,7 @@ This fork closes that gap with:
 
 - **`/update-project-state`** — a dedicated skill that preserves project memory after development work
 - **`/audit-project-knowledge`** — a periodic audit that catches contradictions, drift, and stale data across all project docs
-- **Session start instructions** — every new agent session reads `project-state.md`, `architecture.md`, `CONTEXT.md`, and `issue-tracker.md` before doing anything else
+- **Session start instructions** — every new agent session reads whatever of `project-state.md`, `architecture.md`, `CONTEXT.md`, and `issue-tracker.md` exists before doing anything else (`architecture.md` and `CONTEXT.md` are created lazily by `/grill-with-docs`, so a fresh session may not have them yet)
 
 ## What Changed
 
@@ -30,8 +30,8 @@ This fork closes that gap with:
 
 A new engineering skill that maintains project memory after development work:
 
-- **Updates `project-state.md`** — rewrites the Frontier section, appends to the Completed log (with SHA)
-- **Marks tickets as done** — `[x]` on all checkboxes for local files, `done` label for GitHub/GitLab
+- **Updates `project-state.md`** — rewrites the Frontier section, appends to the Completed log (with the ticket reference), and derives the Frontier from the tracker rather than session memory
+- **Marks tickets as done** — `[x]` on all checkboxes for local files; closes the issue for GitHub/GitLab (no `done` label — closing is what clears native blockers)
 - **Analyzes `architecture.md`** — flags if the system structure changed, suggests review
 - **Analyzes `AGENTS.md`** — detects new permanent engineering rules, suggests addition
 - **Analyzes `CONTEXT.md`** (single or multi-context) — detects new domain concepts, suggests `/grill-with-docs`
@@ -69,10 +69,12 @@ The `## Agent skills` block template now includes a **Session start** section:
 ```markdown
 ### Session start
 
-At the start of each session, read these files to understand the project:
+At the start of each session, read the files below that exist. Skip, without
+comment, any that don't: `CONTEXT.md` and `architecture.md` are created lazily
+by `/grill-with-docs`.
 - `docs/agents/project-state.md` — what's been built, what's next, what's blocked
-- `docs/agents/architecture.md` — how the codebase is structured
-- `CONTEXT.md` — domain glossary and vocabulary
+- `docs/agents/architecture.md` — how the codebase is structured (if it exists)
+- `CONTEXT.md` (or each context's `CONTEXT.md` via `CONTEXT-MAP.md`) — domain glossary and vocabulary (if it exists)
 - `docs/agents/issue-tracker.md` — where issues live and how to interact with them
 ```
 
@@ -104,7 +106,7 @@ A periodic audit of the project's knowledge base. Not part of the normal dev loo
 
 - **Audits AGENTS.md** — duplicate rules, contradictions, stale rules
 - **Audits architecture.md** — outdated modules, stale interfaces, structural drift
-- **Audits project-state.md** — frontier inconsistency, stale SHAs
+- **Audits project-state.md** — frontier inconsistency, stale ticket references
 - **Audits CONTEXT.md** (single or multi-context) — unused terms, duplicates, drifted definitions
 - **Audits ADRs** — contradictory ADRs, reverted decisions, missing ADRs
 - **Cross-references** between documents for contradictions

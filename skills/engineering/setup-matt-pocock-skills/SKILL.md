@@ -88,10 +88,12 @@ The block:
 
 ### Session start
 
-At the start of each session, read these files to understand the project:
+At the start of each session, read the files below that exist. Skip, without
+comment, any that don't: `CONTEXT.md` and `architecture.md` are created lazily
+by `/grill-with-docs`.
 - `docs/agents/project-state.md` — what's been built, what's next, what's blocked
-- `docs/agents/architecture.md` — how the codebase is structured
-- `CONTEXT.md` (or each context's `CONTEXT.md` via `CONTEXT-MAP.md`) — domain glossary and vocabulary
+- `docs/agents/architecture.md` — how the codebase is structured (if it exists)
+- `CONTEXT.md` (or each context's `CONTEXT.md` via `CONTEXT-MAP.md`) — domain glossary and vocabulary (if it exists)
 - `docs/agents/issue-tracker.md` — where issues live and how to interact with them
 
 ### Issue tracker

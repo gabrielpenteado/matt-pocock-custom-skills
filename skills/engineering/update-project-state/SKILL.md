@@ -22,7 +22,7 @@ Responsibilities are separated:
 
 Run after:
 
-- `/implement` completes and commits
+- as the step right before `/implement`'s commit (or, when run standalone, before committing)
 - completed features
 - significant refactors
 - before ending a long development session
@@ -39,7 +39,7 @@ Completion criterion: Done when project-state.md has been read or the stop condi
 
 Analyze what was just built and update the file:
 
-**Frontier** — rewrite this section entirely. List all tickets that are now unblocked (blockers are done). Remove tickets whose blockers are no longer satisfied.
+**Frontier** — rewrite this section entirely. Derive it from the issue tracker per `docs/agents/issue-tracker.md`: open tickets with no open blocker and no assignee. Don't reconstruct it from memory of this session — the tracker is the source of truth for ticket status.
 
 **Completed** — append a new entry (never edit past entries):
 
@@ -48,7 +48,7 @@ Analyze what was just built and update the file:
 
 - **Changed:** key files/modules affected
 - **What works:** the behaviour this ticket delivered
-- **Commit:** SHA
+- **Ticket:** #NN (local tracker: `NN-slug`)
 ```
 
 Completion criterion: Done when Frontier rewritten and Completed entry appended.
@@ -58,7 +58,7 @@ Completion criterion: Done when Frontier rewritten and Completed entry appended.
 In the configured tracker:
 
 - **Local files** (`.scratch/` or `tickets/`): update the ticket's `Status:` field to `done` and mark all checkboxes as `[x]`
-- **GitHub/GitLab**: apply the `done` label or close the issue per your convention
+- **GitHub/GitLab**: close the issue following `docs/agents/issue-tracker.md`'s convention, e.g. `gh issue close <n> --comment "Done — see project-state.md entry NN"`. Don't use a `done` label — it isn't part of the triage vocabulary, and native blockers only clear when the blocking issue is closed.
 
 Completion criterion: Done when ticket is marked done in the tracker.
 

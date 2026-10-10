@@ -62,7 +62,7 @@ Look for:
 
 - **Frontier inconsistency** — tickets listed as unblocked whose blockers are not done
 - **Completed log gaps** — tickets that were marked done but have no completed entry
-- **Stale SHA references** — completed entries with commit SHAs that don't exist in git history
+- **Stale ticket references** — completed entries referencing tickets that don't exist in the tracker
 - **Phase mismatch** — the described phase doesn't match the actual state of the project
 
 #### CONTEXT.md (single or multi-context)

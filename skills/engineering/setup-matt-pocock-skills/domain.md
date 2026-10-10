@@ -61,6 +61,8 @@ If your output contradicts an existing ADR, surface it explicitly rather than si
 
 **`docs/agents/project-state.md`** tracks what's been built and what's next. Two sections with different rules:
 
+The issue tracker is the source of truth for ticket status. The Frontier table is a cached summary of it; if they disagree, the tracker wins and `/prime` flags the mismatch. The Completed log is the only part with no tracker equivalent.
+
 ### Frontier (rewrite every time)
 
 The list of tickets that are unblocked and ready to work on. **Rewrite this section** after every ticket completion — don't append, replace entirely. This keeps it reflecting reality.
@@ -76,7 +78,7 @@ Template for a completed entry:
 
 - **Changed:** key files/modules affected
 - **What works:** the behaviour this ticket delivered
-- **Commit:** SHA
+- **Ticket:** #NN (local tracker: `NN-slug`)
 ```
 
 ### When to update
