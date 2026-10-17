@@ -14,6 +14,20 @@ Issues and PRDs for this repo live as GitLab issues. Use the [`glab`](https://gi
 
 Infer the repo from `git remote -v` — `glab` does this automatically when run inside a clone.
 
+## Commit ticket references
+
+When a commit is associated with a ticket, end its message with the ticket reference on its own final line, where `123` is the GitLab issue IID (the per-project number shown as `#123`):
+
+```text
+(#123)
+```
+
+- **Issues use `#`, merge requests use `!`.** GitLab numbers them separately, so issue `#123` and merge request `!123` are different things. The reference on the final line is always the issue (`#123`), never the MR (`!123`). A reference to an issue in another project is written `group/project#123`.
+- **This is a native link.** GitLab links `#123` to the issue, so the commit is cross-referenced on it. It does not close the issue.
+- **Exactly once, on the final line.** Don't repeat it in the subject or body, so it stays searchable: `git log --grep='(#123)'`.
+- **No closing keywords by default.** Don't add `Closes #123` / `Fixes #123` to every commit. Those keywords close the issue automatically when the commit or MR reaches the default branch, which skips the close-after-ticking-checkboxes step above. Use one only intentionally, when you want that side effect.
+- **Unrelated maintenance commits** with no ticket carry no reference.
+
 ## Merge requests as a triage surface
 
 **MRs as a request surface: no.** _(Set to `yes` if this repo treats external merge requests as feature requests; `/triage` reads this flag.)_

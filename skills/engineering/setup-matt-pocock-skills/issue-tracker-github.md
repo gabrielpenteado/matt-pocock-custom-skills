@@ -13,6 +13,20 @@ Issues and PRDs for this repo live as GitHub issues. Use the `gh` CLI for all op
 
 Infer the repo from `git remote -v` — `gh` does this automatically when run inside a clone.
 
+## Commit ticket references
+
+When a commit is associated with a ticket, end its message with the ticket reference on its own final line, where `123` is the GitHub issue number:
+
+```text
+(#123)
+```
+
+- **This is a native link.** GitHub turns `#123` into a link to the issue, so the commit shows up on the issue's timeline. It does not close the issue.
+- **Issue number, not PR number.** GitHub appends the pull request number automatically (e.g. a squash merge titled `Add export (#456)`), and that one belongs in the subject line. Never swap the issue number for the PR number, or the PR number for the issue number — the reference on the final line is always the ticket.
+- **Exactly once, on the final line.** Don't repeat it in the subject or body, so it stays searchable: `git log --grep='(#123)'`.
+- **No closing keywords by default.** Don't add `Closes #123` / `Fixes #123` to every commit. Those keywords in a commit or PR description close the issue automatically when the change reaches the default branch, which skips the close-after-ticking-checkboxes step above. Use one only intentionally, when you want that side effect.
+- **Unrelated maintenance commits** with no ticket carry no reference.
+
 ## Pull requests as a triage surface
 
 **PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_

@@ -30,6 +30,8 @@ It leads each with a recommended answer you can accept in a word, and skips what
 - **Triage labels** — asked only if the `triage` skill is installed, and then just: keep the default labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`)? Say no only if your tracker already uses other names, so `triage` applies real ones instead of creating duplicates.
 - **Domain docs** — assumed single-context (one `CONTEXT.md` + `docs/adr/` at the root), which fits almost every repo; it only raises a multi-context map when it spots monorepo signals.
 
+The tracker you pick also fixes the **ticket-reference convention** for commits, written into the generated `issue-tracker.md` and read by [implement](https://aihero.dev/skills-implement) when it commits. GitHub keeps native `(#123)` issue links, GitLab uses `(#123)` for issues and keeps merge requests (`!123`) distinct, and the local markdown tracker uses `Ticket: 10` with no `#` — otherwise GitHub could link a local ticket number to an unrelated pull request.
+
 The output is a set of files under `docs/agents/` — `issue-tracker.md`, `domain.md`, and `triage-labels.md` when `triage` is installed — plus an `## Agent skills` block pointing to them in whichever of `CLAUDE.md` / `AGENTS.md` the repo already uses. Those files are the shared substrate the rest of the toolkit stands on.
 
 ## It's working if

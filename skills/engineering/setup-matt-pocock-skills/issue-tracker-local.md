@@ -10,6 +10,19 @@ Issues and specs (you may know a spec as a PRD) for this repo live as markdown f
 - Triage state is recorded as a `Status:` line near the top of each issue file (see `triage-labels.md` for the role strings)
 - Comments and conversation history append to the bottom of the file under a `## Comments` heading
 
+## Commit ticket references
+
+When a commit is associated with a ticket, end its message with the ticket reference on its own final line, using the ticket number from its filename (`.scratch/<feature-slug>/issues/10-<slug>.md` → ticket `10`):
+
+```text
+Ticket: 10
+```
+
+- **Never prefix the number with `#`.** GitHub links any `#NN` it sees, so a local ticket `#10` can silently point at an unrelated pull request or issue 10 on the remote. `Ticket: 10` has no native meaning anywhere, so nothing links to the wrong thing.
+- **Exactly once, on the final line.** Don't repeat it in the subject or body. That keeps it searchable: `git log --grep='Ticket: 10'`.
+- **Use the ticket's own number** — never substitute a PR number.
+- **Unrelated maintenance commits** (dependency bumps, typo fixes, anything with no ticket) carry no reference.
+
 ## When a skill says "publish to the issue tracker"
 
 Create a new file under `.scratch/<feature-slug>/` (creating the directory if needed).

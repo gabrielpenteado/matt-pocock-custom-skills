@@ -52,6 +52,8 @@ Reverted to the original upstream. The only addition is a chaining line — but 
 
 The commit happens **after** `/update-project-state`, so project-state updates, ticket marks, and review flags are all included in the same commit.
 
+If the work belongs to a ticket, the commit ends with a ticket reference in the format configured in `docs/agents/issue-tracker.md`: `Ticket: NN` for the local tracker (never `#NN`, which GitHub could link to an unrelated PR), `(#NN)` for GitHub, and `(#NN)` for GitLab issues (merge requests are `!NN`).
+
 ---
 
 ### 3. `grill-with-docs/SKILL.md` — Modified
